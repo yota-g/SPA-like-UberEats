@@ -6,7 +6,7 @@ module Api
 
         render json:{
           restaurants: restaurants
-        }, status :ok
+        }, status: :ok
       end
     end
   end
