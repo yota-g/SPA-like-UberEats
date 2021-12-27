@@ -1,7 +1,7 @@
 import {REQUEST_STATE} from '../constants';
 
 export const initialState = {
-  fetchState =  REQUEST_STATE.INITIAL,
+  fetchState: REQUEST_STATE.INITIAL,
   restaurantsList: [],
 }
 
@@ -17,12 +17,12 @@ export const restaurantsReducer = (state, action) => {
         ...state,
         fetchState: REQUEST_STATE.LOADING,
       };
-    case restaurantsActionTypes.FETCH_SUCCESS:
+    case restaurantsActionTyps.FETCH_SUCCESS:
       return {
           fetchState:   REQUEST_STATE.OK,
           restaurantsList: action.payload.restaurants,
       };
       default: 
-      throw new Errow();
+      throw new Error();
   }
 }
