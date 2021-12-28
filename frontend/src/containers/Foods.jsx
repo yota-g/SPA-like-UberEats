@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useReducer, useState} from 'react';
+import React, { Fragment, useEffect, useReducer, useState } from 'react';
 import styled from 'styled-components';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { COLORS } from '../style_constants';
 import { LocalMallIcon } from '../components/Icons';
 import { FoodWrapper } from '../components/FoodWrapper';
@@ -23,6 +23,10 @@ import { REQUEST_STATE } from '../constants';
 // images
 import MainLogo from '../images/logo.png';
 import FoodImage from '../images/food-image.jpg';
+
+const submitOrder = () => {
+  console.log('登録ボタンが押された!');
+};
 
 export const Foods = ({ match }) => {
   const [foodsState, dispatch] = useReducer(foodsReducer, foodsInitialState);
@@ -85,12 +89,30 @@ export const Foods = ({ match }) => {
       </FoodsList>
       {state.isOpenOrderDialog && (
         <FoodOrderDialog
-          food={state.selectedFood}
           isOpen={state.isOpenOrderDialog}
+          food={state.selectedFood}
+          countNumber={state.selectedFoodCount}
+          onClickCountUp={() =>
+            setState({
+              ...state,
+              selectedFoodCount: state.selectedFoodCount + 1,
+            })
+          }
+          onClickCountDown={() =>
+            setState({
+              ...state,
+              selectedFoodCount: state.selectedFoodCount - 1,
+            })
+          }
+          //先ほど作った関数を渡す
+          onClickOrder={() => submitOrder()}
+          //モーダルを閉じる時は全てのstateを初期化する
           onClose={() =>
             setState({
               ...state,
-              isopenOrderDialog: false,
+              isOpenOrderDialog: false,
+              selectedFood: null,
+              selectedFoodCount: 1,
             })
           }
         />
