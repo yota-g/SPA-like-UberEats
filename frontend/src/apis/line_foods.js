@@ -31,5 +31,5 @@ export const fetchLineFoods = () => {
   .then(res => {
     return res.data
   })
-  .catch((e) => {throw e;})
-}
+  .catch((e) => { throw e; })
+};

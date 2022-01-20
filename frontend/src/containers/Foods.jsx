@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useReducer, useState } from 'react';
+import React, { Fragment, useReducer, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link , useHistory} from 'react-router-dom';
 import { COLORS } from '../style_constants';
@@ -8,8 +8,6 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { FoodOrderDialog } from '../components/FoodOrderDialog';
 import {NewOrderConfirmDialog} from '../components/NewOrderConfirmDialog';
 import {postLineFoods, replaceLineFoods} from '../apis/line_foods';
-import {HTTP_STATUS_CODE} from '../constants';
-
 
 //reducers
 import {
@@ -22,7 +20,7 @@ import {
 import { fetchFoods } from '../apis/foods';
 
 //constants
-import { REQUEST_STATE } from '../constants';
+import { HTTP_STATUS_CODE, REQUEST_STATE } from '../constants.js';
 
 // images
 import MainLogo from '../images/logo.png';
@@ -72,15 +70,17 @@ export const Foods = ({ match }) => {
 
   useEffect(() => {
     dispatch({ type: foodsActionTyps.FETCHING });
-    fetchFoods(match.params.restaurantsId).then((data) => {
-      dispatch({
-        type: foodsActionTyps.FETCH_SUCCESS,
-        payload: {
-          foods: data.foods,
-        },
-      });
-    });
+    fetchFoods(match.params.restaurantsId)
+      .then((data) => {
+        dispatch({
+          type: foodsActionTyps.FETCH_SUCCESS,
+          payload: {
+            foods: data.foods
+          }
+        });
+      })
   }, []);
+  
   return (
     <Fragment>
       <HeaderWrapper>

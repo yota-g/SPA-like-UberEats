@@ -1,21 +1,22 @@
-import React, { Fragment, useEffect, useReducer } from 'react';
-
+import React, { Fragment, useReducer, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 // components
 import { OrderDetailItem } from '../components/OrderDetailItem';
 import { OrderButton } from '../components/Buttons/OrderButton';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+// apis
 import { fetchLineFoods } from '../apis/line_foods';
 import { postOrder } from '../apis/orders';
 
+// reducers
 import {
   initialState,
   lineFoodsActionTyps,
   lineFoodsReducer,
-} from '../reduceres/lineFoods';
+} from '../reducers/lineFoods';
 
 // images
 import MainLogo from '../images/logo.png';
@@ -43,18 +44,19 @@ const OrderItemWrapper = styled.div`
 `;
 
 export const Orders = () => {
+  const [state, dispatch] = useReducer(lineFoodsReducer, initialState);
+
   useEffect(() => {
-    dispatchEvent({ type: lineFoodsActionTyps.FETCHING });
+    dispatch({ type: lineFoodsActionTyps.FETCHING });
     fetchLineFoods()
       .then((data) =>
-        dispatchEvent({
+        dispatch({
           type: lineFoodsActionTyps.FETCH_SUCCESS,
           payload: {
-            lineFoodsSummary: data,
-          },
+            lineFoodsSummary: data
+          }
         })
-      )
-      .catch((e) => console.error(e));
+      );
   }, []);
 
   const postLineFoods = () => {
@@ -63,8 +65,8 @@ export const Orders = () => {
       line_food_ids: state.lineFoodsSummary.line_food_ids,
     }).then(() => {
       dispatch({ type: lineFoodsActionTyps.POST_SUCCESS });
-      window.location.reload();
     });
+    window.location.reload();
   };
 
   const orderButtonLabel = () => {
@@ -86,45 +88,43 @@ export const Orders = () => {
         </Link>
       </HeaderWrapper>
       <OrderListWrapper>
-        <div>
-          <OrderItemWrapper>
-            {
-              // APIローディング中はくるくる回るローディングコンポーネントを表示
-              state.fetchState === REQUEST_STATE.LOADING ? (
-                <CircularProgress />
-              ) : (
-                state.lineFoodsSummary && (
-                  <OrderDetailItem
-                    restaurantFee={state.lineFoodsSummary.restaurant.fee}
-                    restaurantName={state.lineFoodsSummary.restaurant.name}
-                    restaurantId={state.lineFoodsSummary.restaurant.id}
-                    timeRequired={
-                      state.lineFoodsSummary.restaurant.time_required
-                    }
-                    foodCount={state.lineFoodsSummary.count}
-                    price={state.lineFoodsSummary.amount}
-                  />
-                )
-              )
-            }
-          </OrderItemWrapper>
           <div>
-            {state.fetchState === REQUEST_STATE.OK && state.lineFoodsSummary && (
-              <OrderButton
-                onClick={() => postLineFoods()}
-                disabled={
-                  state.postState === REQUEST_STATE.LOADING ||
-                  state.postState === REQUEST_STATE.OK
-                }
-              >
-                {orderButtonLabel()}
-              </OrderButton>
-            )}
-            {state.fetchState === REQUEST_STATE.OK &&
-              !state.lineFoodsSummary && <p>注文予定の商品はありません。</p>}
+            <OrderItemWrapper>
+              {
+                // APIローディング中はくるくる回るローディングコンポーネントを表示
+                state.fetchState === REQUEST_STATE.LOADING ?
+                  <CircularProgress />
+                :
+                  state.lineFoodsSummary &&
+                    <OrderDetailItem
+                      restaurantFee={state.lineFoodsSummary.restaurant.fee}
+                      restaurantName={state.lineFoodsSummary.restaurant.name}
+                      restaurantId={state.lineFoodsSummary.restaurant.id}
+                      timeRequired={state.lineFoodsSummary.restaurant.time_required}
+                      foodCount={state.lineFoodsSummary.count}
+                      price={state.lineFoodsSummary.amount}
+                    />
+              }
+            </OrderItemWrapper>
+          <div>
+            {
+              state.fetchState === REQUEST_STATE.OK && state.lineFoodsSummary &&
+                <OrderButton
+                  onClick={() => postLineFoods()}
+                  disabled={state.postState === REQUEST_STATE.LOADING || state.postState === REQUEST_STATE.OK}
+                >
+                  {orderButtonLabel()}
+                </OrderButton>
+            }
+            {
+              state.fetchState === REQUEST_STATE.OK && !(state.lineFoodsSummary) &&
+                <p>
+                  注文予定の商品はありません。
+                </p>
+            }
           </div>
         </div>
       </OrderListWrapper>
     </Fragment>
-  );
-};
+  )
+}

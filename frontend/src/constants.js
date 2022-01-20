@@ -4,6 +4,6 @@ export const REQUEST_STATE = {
   OK: 'OK',
 }
 
-export const HTTP_STATS_CODE = {
+export const HTTP_STATUS_CODE = {
   NOT_ACCEPTABLE: 406,
 }
